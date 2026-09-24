@@ -398,16 +398,19 @@ async function ensureUniqueSlug (baseSlug, excludeId = null) {
 async function getCategoryFeed (slug, cursor, limit = 12) {
   let category = await prisma.category.findUnique({ where: { slug } })
   if (!category) {
-    const alternateSlugs = slug === 'photo-gallery' ? ['gallery', 'photo-gallery'] : slug === 'gallery' ? ['photo-gallery', 'gallery'] : [slug]
-    category = await prisma.category.findFirst({
-      where: {
-        OR: [
-          { slug: { in: alternateSlugs } },
-          { name: slug.replace(/-/g, ' ') },
-          { name: 'Photo Gallery' }
-        ]
-      }
-    })
+    // Only allow gallery slug variants to resolve to each other
+    const isGallerySlug = slug === 'photo-gallery' || slug === 'gallery'
+    if (isGallerySlug) {
+      const alternateSlugs = slug === 'photo-gallery' ? ['gallery', 'photo-gallery'] : ['photo-gallery', 'gallery']
+      category = await prisma.category.findFirst({
+        where: { slug: { in: alternateSlugs } }
+      })
+    } else {
+      // Try matching by name (hyphen → space), but ONLY for the requested slug — no catch-all fallback
+      category = await prisma.category.findFirst({
+        where: { name: slug.replace(/-/g, ' ') }
+      })
+    }
   }
   if (!category) return null
 

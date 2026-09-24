@@ -14,7 +14,7 @@ const navConfig = [
     url: "/category/beyond-campus",
     children: [
       { name: "Current Affairs",             url: "/category/current-affairs" },
-      { name: "Entertainment & Lifestyle Feature", url: "/category/entertainment-lifestyle" },
+      { name: "Entertainment & Lifestyle Feature", url: "/category/entertainment-lifestyle-feature" },
       { name: "Sports",                      url: "/category/sports" },
     ],
   },
