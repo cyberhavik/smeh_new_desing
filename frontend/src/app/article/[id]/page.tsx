@@ -8,9 +8,10 @@ import { ArrowLeft, Clock, Youtube, PlayCircle, Tag, User, Download, Images, Max
 import { LightboxModal, LightboxImage } from "@/components/Gallery/LightboxModal";
 
 const getBaseUrl = () => {
-  if (typeof window !== 'undefined') return ''; // Proxy through Next.js
+  if (typeof window !== 'undefined') return ''; // Browser uses relative URLs via nginx
+  if (process.env.INTERNAL_API_URL) return process.env.INTERNAL_API_URL; // SSR: direct to backend
   if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
-  return "https://smeh-new-desing.vercel.app";
+  return 'http://127.0.0.1:8081'; // fallback for SSR
 };
 const API_BASE_URL = getBaseUrl();
 
